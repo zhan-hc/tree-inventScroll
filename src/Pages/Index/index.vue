@@ -94,8 +94,31 @@ export default {
         }
       })
     },
-    // 扁平化树型数据
-    flatten (data, arr = [], parent = null, level = 0, visible = true, children = [], insert = null) {
+    // 迭代处理
+    flatten_iteration (tree) {
+      let flatData = []
+      let stack = [...tree]
+      let parentIndex = {} // 存储level的索引
+      while (stack.length) {
+        let node = stack.shift()
+        if (!node.level) {
+          node.level = 0
+        }
+        if (node.children) {
+          parentIndex[node.level] = flatData.length // node的level索引等于flatData的长度，因为接下来push的就是node
+          stack.unshift(...node.children.map(item => { // 设置子类的level
+            return {...item, level: node.level + 1}
+          }))
+        }
+        flatData.push({...node, children: [], visible: typeof node.expand === 'undefined' ? true : node.expand})
+        if (node.level !== 0) { // 添加子类引用（只要不是第一层，肯定node肯定有父节点）
+          flatData[parentIndex[node.level - 1]].children.push(flatData[flatData.length - 1]) // 往当前的node的父节点的children属性添加本身
+        }
+      }
+      return flatData
+    },
+    // 递归处理
+    flatten_recursion (data, arr = [], parent = null, level = 0, visible = true, children = [], insert = null) {
       arr.push({...data, level, parent, visible, children})
       if (insert !== null) {
         arr[insert].children.push(arr[arr.length - 1])
@@ -103,7 +126,7 @@ export default {
       if (data.children) {
         insert = arr.length - 1
         data.children.forEach((item) => {
-          this.flatten(item, arr, arr[arr.length - 1], level + 1, data.expand, [], insert)
+          this.flatten_recursion(item, arr, arr[arr.length - 1], level + 1, data.expand, [], insert)
         })
       }
       return arr
@@ -119,7 +142,8 @@ export default {
     }
   },
   mounted () {
-    this.treeData = this.flatten(...this.tdata)
+    this.treeData = this.flatten_iteration(this.tdata)
+    // this.treeData = this.flatten_recursion(...this.tdata)
   }
 }
 </script>
