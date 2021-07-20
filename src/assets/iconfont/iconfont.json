@@ -1,0 +1,30 @@
+{
+  "id": "2674026",
+  "name": "tree",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "20018747",
+      "name": "tree",
+      "font_class": "tree",
+      "unicode": "e778",
+      "unicode_decimal": 59256
+    },
+    {
+      "icon_id": "9709082",
+      "name": "right",
+      "font_class": "right",
+      "unicode": "e999",
+      "unicode_decimal": 59801
+    },
+    {
+      "icon_id": "18321844",
+      "name": "bottom",
+      "font_class": "bottom",
+      "unicode": "e95a",
+      "unicode_decimal": 59738
+    }
+  ]
+}
