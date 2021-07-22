@@ -87,15 +87,16 @@ export default {
         let node = stack.shift()
         if (!node.level) {
           node.level = 0
+          node.visible = true
         }
         if (node.children) {
           parentIndex[node.level] = flatData.length // node的level索引等于flatData的长度，因为接下来push的就是node
           stack.unshift(...node.children.map(item => { // 设置子类的level
-            return {...item, level: node.level + 1}
+            return {...item, level: node.level + 1, visible: node.expand}
           }))
         }
-        flatData.push({...node, children: [], visible: typeof node.expand === 'undefined' ? true : node.expand})
-        if (node.level !== 0) { // 添加子类引用（只要不是第一层，肯定node肯定有父节点）
+        flatData.push({...node, children: []})
+        if (node.level !== 0) { // 添加子类引用（只要不是第一层，node肯定有父节点）
           flatData[parentIndex[node.level - 1]].children.push(flatData[flatData.length - 1]) // 往当前的node的父节点的children属性添加本身
         }
       }
@@ -127,7 +128,7 @@ export default {
   },
   mounted () {
     this.treeData = this.flatten_iteration(this.data)
-    // this.treeData = this.flatten_recursion(...this.tdata)
+    // this.treeData = this.flatten_recursion(...this.data)
   }
 }
 </script>
